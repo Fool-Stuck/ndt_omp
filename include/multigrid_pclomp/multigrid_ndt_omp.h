@@ -58,6 +58,8 @@
 #include "../pclomp/ndt_struct.hpp"
 #include "multigrid_pclomp/multi_voxel_grid_covariance_omp.h"
 
+#include <memory>
+
 #include <pcl/search/impl/search.hpp>
 #include <unsupported/Eigen/NonLinearOptimization>
 
@@ -98,6 +100,8 @@ protected:
   typedef typename TargetGrid::LeafConstPtr TargetGridLeafConstPtr;
 
 public:
+  using SharedPtr =
+    std::shared_ptr<MultiGridNormalDistributionsTransform<PointSource, PointTarget>>;
 #if PCL_VERSION >= PCL_VERSION_CALC(1, 10, 0)
   typedef pcl::shared_ptr<MultiGridNormalDistributionsTransform<PointSource, PointTarget>> Ptr;
   typedef pcl::shared_ptr<const MultiGridNormalDistributionsTransform<PointSource, PointTarget>>
@@ -124,7 +128,9 @@ public:
   MultiGridNormalDistributionsTransform & operator=(MultiGridNormalDistributionsTransform && other);
 
   /** \brief Empty destructor */
-  virtual ~MultiGridNormalDistributionsTransform() {}
+  virtual ~MultiGridNormalDistributionsTransform()
+  {
+  }
 
   void setNumThreads(int n)
   {
@@ -133,7 +139,10 @@ public:
     target_cells_.setThreadNum(params_.num_threads);
   }
 
-  inline int getNumThreads() const { return params_.num_threads; }
+  inline int getNumThreads() const
+  {
+    return params_.num_threads;
+  }
 
   inline void setInputSource(const PointCloudSourceConstPtr & input)
   {
@@ -164,7 +173,10 @@ public:
     target_cells_.setInputCloudAndFilter(cloud, target_id);
   }
 
-  inline void removeTarget(const std::string target_id) { target_cells_.removeCloud(target_id); }
+  inline void removeTarget(const std::string target_id)
+  {
+    target_cells_.removeCloud(target_id);
+  }
 
   inline void createVoxelKdtree()
   {
@@ -187,32 +199,50 @@ public:
   /** \brief Get voxel grid resolution.
    * \return side length of voxels
    */
-  inline float getResolution() const { return (params_.resolution); }
+  inline float getResolution() const
+  {
+    return (params_.resolution);
+  }
 
   /** \brief Get the newton line search maximum step length.
    * \return maximum step length
    */
-  inline double getStepSize() const { return (params_.step_size); }
+  inline double getStepSize() const
+  {
+    return (params_.step_size);
+  }
 
   /** \brief Set/change the newton line search maximum step length.
    * \param[in] step_size maximum step length
    */
-  inline void setStepSize(double step_size) { params_.step_size = step_size; }
+  inline void setStepSize(double step_size)
+  {
+    params_.step_size = step_size;
+  }
 
   /** \brief Get the point cloud outlier ratio.
    * \return outlier ratio
    */
-  inline double getOutlierRatio() const { return (outlier_ratio_); }
+  inline double getOutlierRatio() const
+  {
+    return (outlier_ratio_);
+  }
 
   /** \brief Set/change the point cloud outlier ratio.
    * \param[in] outlier_ratio outlier ratio
    */
-  inline void setOutlierRatio(double outlier_ratio) { outlier_ratio_ = outlier_ratio; }
+  inline void setOutlierRatio(double outlier_ratio)
+  {
+    outlier_ratio_ = outlier_ratio;
+  }
 
   /** \brief Get the registration alignment probability.
    * \return transformation probability
    */
-  inline double getTransformationProbability() const { return (trans_probability_); }
+  inline double getTransformationProbability() const
+  {
+    return (trans_probability_);
+  }
 
   inline double getNearestVoxelTransformationLikelihood() const
   {
@@ -222,10 +252,16 @@ public:
   /** \brief Get the number of iterations required to calculate alignment.
    * \return final number of iterations
    */
-  inline int getFinalNumIteration() const { return (nr_iterations_); }
+  inline int getFinalNumIteration() const
+  {
+    return (nr_iterations_);
+  }
 
   /** \brief Return the hessian matrix */
-  inline Eigen::Matrix<double, 6, 6> getHessian() const { return hessian_; }
+  inline Eigen::Matrix<double, 6, 6> getHessian() const
+  {
+    return hessian_;
+  }
 
   /** \brief Return the transformation array */
   inline const std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f>>
@@ -272,7 +308,10 @@ public:
     regularization_pose_ = regularization_pose;
   }
 
-  inline void unsetRegularizationPose() { regularization_pose_ = boost::none; }
+  inline void unsetRegularizationPose()
+  {
+    regularization_pose_ = boost::none;
+  }
 
   NdtResult getResult()
   {
@@ -295,12 +334,18 @@ public:
    * transformation epsilon in order for an optimization to be considered as having
    * converged to the final solution.
    */
-  inline void setTransformationEpsilon(double epsilon) { params_.trans_epsilon = epsilon; }
+  inline void setTransformationEpsilon(double epsilon)
+  {
+    params_.trans_epsilon = epsilon;
+  }
 
   /** \brief Get the transformation epsilon (maximum allowable translation squared
    * difference between two consecutive transformations) as set by the user.
    */
-  inline double getTransformationEpsilon() { return (params_.trans_epsilon); }
+  inline double getTransformationEpsilon()
+  {
+    return (params_.trans_epsilon);
+  }
 
   inline void setMaximumIterations(int max_iterations)
   {
@@ -308,9 +353,15 @@ public:
     max_iterations_ = params_.max_iterations;
   }
 
-  inline int getMaxIterations() const { return params_.max_iterations; }
+  inline int getMaxIterations() const
+  {
+    return params_.max_iterations;
+  }
 
-  inline int getMaxIterations() { return params_.max_iterations; }
+  inline int getMaxIterations()
+  {
+    return params_.max_iterations;
+  }
 
   void setParams(const NdtParams & ndt_params)
   {
@@ -320,11 +371,20 @@ public:
     target_cells_.setThreadNum(params_.num_threads);
   }
 
-  NdtParams getParams() const { return params_; }
+  NdtParams getParams() const
+  {
+    return params_;
+  }
 
-  pcl::PointCloud<PointTarget> getVoxelPCD() const { return target_cells_.getVoxelPCD(); }
+  pcl::PointCloud<PointTarget> getVoxelPCD() const
+  {
+    return target_cells_.getVoxelPCD();
+  }
 
-  std::vector<std::string> getCurrentMapIDs() const { return target_cells_.getCurrentMapIDs(); }
+  std::vector<std::string> getCurrentMapIDs() const
+  {
+    return target_cells_.getCurrentMapIDs();
+  }
 
 protected:
   using BaseRegType::converged_;
@@ -356,7 +416,9 @@ protected:
   virtual void computeTransformation(PointCloudSource & output, const Eigen::Matrix4f & guess);
 
   /** \brief Initiate covariance voxel structure. */
-  void inline init() {}
+  void inline init()
+  {
+  }
 
   /** \brief Compute derivatives of probability function w.r.t. the transformation vector.
    * \note Equation 6.10, 6.12 and 6.13 [Magnusson 2009].
